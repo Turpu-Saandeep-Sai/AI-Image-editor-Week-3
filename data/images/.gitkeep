@@ -1,0 +1,2 @@
+# This file ensures the data/images/ directory is tracked by git.
+# Uploaded images are excluded from version control via .gitignore.

@@ -1,0 +1,54 @@
+# ──────────────────────────────────────────────────────────────────────────────
+# .gitignore — AI-Powered Image Editing Platform
+# ──────────────────────────────────────────────────────────────────────────────
+
+# ── Environment & secrets ────────────────────────────────────────────────────
+.env
+*.env.local
+*.env.*.local
+
+# ── Python ───────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+*.egg
+*.egg-info/
+dist/
+build/
+.eggs/
+*.pyo
+*.pyc
+
+# ── Virtual environments ─────────────────────────────────────────────────────
+.venv/
+venv/
+env/
+ENV/
+.Python
+
+# ── Streamlit ────────────────────────────────────────────────────────────────
+.streamlit/secrets.toml
+
+# ── Data / uploads (do not commit user data) ─────────────────────────────────
+data/images/*
+!data/images/.gitkeep
+data/metadata.json
+
+# ── IDE & OS ─────────────────────────────────────────────────────────────────
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ── Testing & coverage ───────────────────────────────────────────────────────
+.pytest_cache/
+.coverage
+htmlcov/
+*.log
+
+# ── Notebook checkpoints ─────────────────────────────────────────────────────
+.ipynb_checkpoints/
