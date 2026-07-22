@@ -76,7 +76,7 @@ st.set_page_config(
     menu_items={
         "Get Help": None,
         "Report a bug": None,
-        "About": "**AI-Powered Image Editing Platform** · Week 1 MVP",
+        "About": "**AI-Powered Image Editing Platform** · Week 2",
     },
 )
 
@@ -250,7 +250,7 @@ def _render_sidebar() -> None:
                     AI Image Editor
                 </h2>
                 <p style="color:rgba(255,255,255,0.35); font-size:0.75rem; margin:0;">
-                    Week 1 MVP · Image Management
+                    Week 2 · AI Editing & Versions
                 </p>
             </div>
             """,
@@ -262,6 +262,7 @@ def _render_sidebar() -> None:
         st.page_link("app.py", label="⬆️  Upload", icon=None)
         st.page_link("pages/1_Library.py", label="🖼️  Library", icon=None)
         st.page_link("pages/2_Image_Detail.py", label="🔍  Detail View", icon=None)
+        st.page_link("pages/3_Image_Edit.py", label="✏️  Edit Image", icon=None)
 
         st.markdown("---")
 
@@ -278,7 +279,7 @@ def _render_sidebar() -> None:
         st.markdown("---")
         st.markdown(
             "<p style='color:rgba(255,255,255,0.3); font-size:0.7rem; text-align:center;'>"
-            "v1.0.0 · Built with Streamlit</p>",
+            "v2.0.0 · Built with Streamlit</p>",
             unsafe_allow_html=True,
         )
 

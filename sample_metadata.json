@@ -1,0 +1,39 @@
+[
+  {
+    "id": "abc123",
+    "filename": "beach.jpg",
+    "caption": "A beautiful sandy beach with crystal clear water",
+    "filepath": "data/images/abc123.jpg",
+    "uploaded_at": "2026-07-15T10:30:00Z",
+    "versions": [
+      {
+        "version": 0,
+        "type": "original",
+        "filepath": "data/images/abc123.jpg",
+        "prompt": "Original Upload",
+        "timestamp": "2026-07-15T10:30:00Z"
+      },
+      {
+        "version": 1,
+        "type": "edited",
+        "filepath": "data/images/abc123_v1.png",
+        "prompt": "Remove umbrella",
+        "timestamp": "2026-07-15T11:00:00Z"
+      },
+      {
+        "version": 2,
+        "type": "edited",
+        "filepath": "data/images/abc123_v2.png",
+        "prompt": "Add mountains in the background",
+        "timestamp": "2026-07-15T11:15:00Z"
+      },
+      {
+        "version": 3,
+        "type": "edited",
+        "filepath": "data/images/abc123_v3.png",
+        "prompt": "Increase brightness",
+        "timestamp": "2026-07-15T11:25:00Z"
+      }
+    ]
+  }
+]

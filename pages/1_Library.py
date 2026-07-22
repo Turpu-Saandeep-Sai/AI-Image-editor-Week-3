@@ -199,7 +199,7 @@ def _render_sidebar() -> None:
                     AI Image Editor
                 </h2>
                 <p style="color:rgba(255,255,255,0.35); font-size:0.75rem; margin:0;">
-                    Week 1 MVP · Image Management
+                    Week 2 · AI Editing & Versions
                 </p>
             </div>
             """,
@@ -210,6 +210,7 @@ def _render_sidebar() -> None:
         st.page_link("app.py", label="⬆️  Upload")
         st.page_link("pages/1_Library.py", label="🖼️  Library")
         st.page_link("pages/2_Image_Detail.py", label="🔍  Detail View")
+        st.page_link("pages/3_Image_Edit.py", label="✏️  Edit Image")
         st.markdown("---")
         all_records = find_all(DATA_DIR)
         captioned = sum(1 for r in all_records if r.get("caption"))
@@ -219,7 +220,7 @@ def _render_sidebar() -> None:
         st.markdown("---")
         st.markdown(
             "<p style='color:rgba(255,255,255,0.3);font-size:0.7rem;text-align:center;'>"
-            "v1.0.0 · Built with Streamlit</p>",
+            "v2.0.0 · Built with Streamlit</p>",
             unsafe_allow_html=True,
         )
 
@@ -321,9 +322,15 @@ def _render_image_card(col, record: dict) -> None:
         )
 
         # View button
-        if st.button("🔍 View Details", key=f"view_{image_id}"):
-            st.session_state["selected_image_id"] = image_id
-            st.switch_page("pages/2_Image_Detail.py")
+        btn_c1, btn_c2 = st.columns(2)
+        with btn_c1:
+            if st.button("🔍 View", key=f"view_{image_id}"):
+                st.session_state["selected_image_id"] = image_id
+                st.switch_page("pages/2_Image_Detail.py")
+        with btn_c2:
+            if st.button("✏️ Edit", key=f"edit_{image_id}"):
+                st.session_state["selected_image_id"] = image_id
+                st.switch_page("pages/3_Image_Edit.py")
 
         st.markdown("</div>", unsafe_allow_html=True)
 

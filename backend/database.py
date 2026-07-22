@@ -309,3 +309,81 @@ def build_record(
         "uploaded_at": uploaded_at,
         "versions": [],  # reserved for Week 2+ version history
     }
+
+
+# ---------------------------------------------------------------------------
+# Version history (Week 2)
+# ---------------------------------------------------------------------------
+
+def add_version(
+    data_dir: Path,
+    image_id: str,
+    version_record: dict[str, Any],
+) -> bool:
+    """Append a new version entry to the image record's ``"versions"`` list.
+
+    The version record is appended in chronological order.  If no initial
+    ``"versions"`` key exists on the record, one is created.
+
+    Expected *version_record* schema::
+
+        {
+            "version":   int,   # 1, 2, 3, …
+            "type":      str,   # "original" | "edited"
+            "filepath":  str,   # absolute path to the versioned image
+            "prompt":    str,   # editing prompt used
+            "timestamp": str,   # ISO-8601 UTC timestamp
+        }
+
+    Args:
+        data_dir:        Root data directory.
+        image_id:        UUID of the parent image record.
+        version_record:  Dict describing the new version.
+
+    Returns:
+        bool: ``True`` if the version was appended and saved successfully.
+    """
+    records = load_metadata(data_dir)
+    found = False
+
+    for record in records:
+        if record.get("id") == image_id:
+            if "versions" not in record:
+                record["versions"] = []
+            record["versions"].append(deepcopy(version_record))
+            found = True
+            break
+
+    if not found:
+        logger.warning("add_version: no record found with id=%s.", image_id)
+        return False
+
+    return save_metadata(data_dir, records)
+
+
+def load_versions(
+    data_dir: Path,
+    image_id: str,
+) -> list[dict[str, Any]]:
+    """Return the version history list for the image identified by *image_id*.
+
+    If the record is not found or has no versions, an empty list is returned.
+
+    Args:
+        data_dir:  Root data directory.
+        image_id:  UUID of the image to look up.
+
+    Returns:
+        list[dict]: A list of version records, sorted by version number.
+    """
+    record = find_by_id(data_dir, image_id)
+    if record is None:
+        return []
+
+    versions = record.get("versions", [])
+    try:
+        versions.sort(key=lambda v: v.get("version", 0))
+    except TypeError:
+        pass
+    return versions
+

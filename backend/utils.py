@@ -227,3 +227,68 @@ def get_image_dimensions(image_path: Path) -> Optional[tuple[int, int]]:
     except Exception as exc:  # noqa: BLE001
         logger.error("Could not read dimensions of %s: %s", image_path, exc)
         return None
+
+
+# ---------------------------------------------------------------------------
+# Version naming (Week 2)
+# ---------------------------------------------------------------------------
+
+def version_name(image_id: str, version_num: int, ext: str = ".png") -> str:
+    """Generate a consistent versioned filename for an edited image.
+
+    Args:
+        image_id:    UUID of the parent image.
+        version_num: Integer version number (1, 2, 3, …).
+        ext:         File extension including the leading dot.
+
+    Returns:
+        str: A filename of the form ``{image_id}_v{version_num}{ext}``.
+
+    Example:
+        >>> version_name("abc123", 2, ".png")
+        'abc123_v2.png'
+    """
+    ext = ext if ext.startswith(".") else f".{ext}"
+    return f"{image_id}_v{version_num}{ext}"
+
+
+# ---------------------------------------------------------------------------
+# Thumbnail creation to disk (Week 2)
+# ---------------------------------------------------------------------------
+
+THUMBNAIL_DISK_SIZE: tuple[int, int] = (200, 200)
+
+
+def create_thumbnail(
+    image_path: Path,
+    thumb_dir: Path,
+    size: tuple[int, int] = THUMBNAIL_DISK_SIZE,
+) -> Optional[Path]:
+    """Create a thumbnail of the image and save it to *thumb_dir*.
+
+    The thumbnail file is named ``thumb_{original_stem}.png``.
+
+    Args:
+        image_path: Path to the source image.
+        thumb_dir:  Directory where the thumbnail will be saved.
+        size:       Maximum (width, height) bounding box.
+
+    Returns:
+        Path | None: Path to the saved thumbnail, or ``None`` on failure.
+    """
+    try:
+        thumb_dir.mkdir(parents=True, exist_ok=True)
+        thumb_path = thumb_dir / f"thumb_{image_path.stem}.png"
+
+        with Image.open(image_path) as img:
+            img_copy = img.copy()
+            if img_copy.mode not in ("RGB", "RGBA"):
+                img_copy = img_copy.convert("RGB")
+            img_copy.thumbnail(size, Image.LANCZOS)
+            img_copy.save(thumb_path, format="PNG")
+
+        logger.info("Thumbnail saved: %s", thumb_path)
+        return thumb_path
+    except Exception as exc:  # noqa: BLE001
+        logger.error("Failed to create thumbnail for %s: %s", image_path, exc)
+        return None

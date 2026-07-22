@@ -243,3 +243,38 @@ def copy_image(src: Path, dest_dir: Path, new_name: Optional[str] = None) -> Opt
     except OSError as exc:
         logger.error("copy_image: failed to copy %s → %s — %s", src, dest_path, exc)
         return None
+
+
+def save_version_image(
+    file_data: bytes,
+    image_id: str,
+    version_num: int,
+    images_dir: Path,
+) -> Path:
+    """Save edited image bytes with a versioned filename.
+
+    Delegates to :func:`save_image` after constructing the version filename
+    using :func:`backend.utils.version_name`.
+
+    Args:
+        file_data:    Raw bytes of the edited image.
+        image_id:     UUID of the parent image record.
+        version_num:  Integer version number (1, 2, 3, …).
+        images_dir:   Directory where images are stored.
+
+    Returns:
+        Path: Absolute path where the versioned image was saved.
+
+    Raises:
+        ValueError:   If a path-traversal attempt is detected.
+        OSError:      If the file cannot be written.
+        RuntimeError: If *file_data* is not a valid image.
+    """
+    from backend.utils import version_name as _version_name
+
+    filename = _version_name(image_id, version_num, ".png")
+    return save_image(
+        file_data=file_data,
+        filename=filename,
+        images_dir=images_dir,
+    )

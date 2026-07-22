@@ -237,7 +237,7 @@ def _render_sidebar() -> None:
                     AI Image Editor
                 </h2>
                 <p style="color:rgba(255,255,255,0.35); font-size:0.75rem; margin:0;">
-                    Week 1 MVP · Image Management
+                    Week 2 · AI Editing & Versions
                 </p>
             </div>
             """,
@@ -248,6 +248,7 @@ def _render_sidebar() -> None:
         st.page_link("app.py", label="⬆️  Upload")
         st.page_link("pages/1_Library.py", label="🖼️  Library")
         st.page_link("pages/2_Image_Detail.py", label="🔍  Detail View")
+        st.page_link("pages/3_Image_Edit.py", label="✏️  Edit Image")
         st.markdown("---")
 
         # Image selector dropdown
@@ -279,7 +280,7 @@ def _render_sidebar() -> None:
         st.markdown("---")
         st.markdown(
             "<p style='color:rgba(255,255,255,0.3);font-size:0.7rem;text-align:center;'>"
-            "v1.0.0 · Built with Streamlit</p>",
+            "v2.0.0 · Built with Streamlit</p>",
             unsafe_allow_html=True,
         )
 
@@ -434,11 +435,22 @@ def _render_image_detail(record: dict) -> None:
         st.markdown('<div class="info-section-title">🕐 Version History</div>', unsafe_allow_html=True)
         if versions:
             for v in versions:
-                st.markdown(f"- Version `{v.get('version_id', '?')}` — {v.get('created_at', '?')}")
+                ver_num = v.get('version', '?')
+                ver_prompt = v.get('prompt', '—')
+                ver_ts = v.get('timestamp', '—')
+                st.markdown(
+                    f"<div style='background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.08);"
+                    f"border-radius:8px;padding:0.5rem;margin-bottom:0.4rem;'>"
+                    f"<span style='color:#a78bfa;font-weight:700;font-size:0.75rem;'>✏️ v{ver_num}</span>"
+                    f"<br><span style='color:rgba(255,255,255,0.6);font-size:0.7rem;'>{ver_prompt}</span>"
+                    f"<br><span style='color:rgba(255,255,255,0.3);font-size:0.6rem;'>{ver_ts[:16] if len(str(ver_ts)) > 16 else ver_ts}</span>"
+                    f"</div>",
+                    unsafe_allow_html=True,
+                )
         else:
             st.markdown(
                 "<p style='color:rgba(255,255,255,0.3);font-size:0.78rem;'>"
-                "No versions yet. Editing will be available in Week 2.</p>",
+                "No versions yet. Use the Edit page to create versions.</p>",
                 unsafe_allow_html=True,
             )
 
@@ -447,33 +459,14 @@ def _render_image_detail(record: dict) -> None:
         # ── Action buttons ─────────────────────────────────────────────────
         st.markdown("---")
         st.markdown("##### ⚡ Actions")
-        st.markdown(
-            """
-            <div class="action-grid">
-                <div class="action-btn">
-                    <span class="btn-icon">✏️</span>
-                    <div class="btn-label">Edit Image</div>
-                    <div class="btn-sub">Available in Week 2</div>
-                </div>
-                <div class="action-btn">
-                    <span class="btn-icon">🕐</span>
-                    <div class="btn-label">Versions</div>
-                    <div class="btn-sub">Available in Week 2</div>
-                </div>
-                <div class="action-btn">
-                    <span class="btn-icon">🔍</span>
-                    <div class="btn-label">Semantic Search</div>
-                    <div class="btn-sub">Available in Week 3</div>
-                </div>
-                <div class="action-btn">
-                    <span class="btn-icon">🗑️</span>
-                    <div class="btn-label">Delete</div>
-                    <div class="btn-sub">Available in Week 2</div>
-                </div>
-            </div>
-            """,
-            unsafe_allow_html=True,
-        )
+
+        act_c1, act_c2 = st.columns(2)
+        with act_c1:
+            if st.button("✏️ Edit Image", key="action_edit", use_container_width=True):
+                st.switch_page("pages/3_Image_Edit.py")
+        with act_c2:
+            if st.button(f"🕐 Versions ({len(versions)})", key="action_versions", use_container_width=True):
+                st.switch_page("pages/3_Image_Edit.py")
 
     # ── Quick metrics strip ────────────────────────────────────────────────
     st.markdown("---")
