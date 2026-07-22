@@ -237,7 +237,7 @@ def _render_sidebar() -> None:
                     AI Image Editor
                 </h2>
                 <p style="color:rgba(255,255,255,0.35); font-size:0.75rem; margin:0;">
-                    Week 2 · AI Editing & Versions
+                    Week 3 · Search & AI Platform
                 </p>
             </div>
             """,
@@ -249,6 +249,7 @@ def _render_sidebar() -> None:
         st.page_link("pages/1_Library.py", label="🖼️  Library")
         st.page_link("pages/2_Image_Detail.py", label="🔍  Detail View")
         st.page_link("pages/3_Image_Edit.py", label="✏️  Edit Image")
+        st.page_link("pages/4_Search.py", label="🔎  Semantic Search")
         st.markdown("---")
 
         # Image selector dropdown
@@ -280,7 +281,7 @@ def _render_sidebar() -> None:
         st.markdown("---")
         st.markdown(
             "<p style='color:rgba(255,255,255,0.3);font-size:0.7rem;text-align:center;'>"
-            "v2.0.0 · Built with Streamlit</p>",
+            "v3.0.0 · Built with Streamlit</p>",
             unsafe_allow_html=True,
         )
 
@@ -460,13 +461,18 @@ def _render_image_detail(record: dict) -> None:
         st.markdown("---")
         st.markdown("##### ⚡ Actions")
 
-        act_c1, act_c2 = st.columns(2)
+        act_c1, act_c2, act_c3 = st.columns(3)
         with act_c1:
             if st.button("✏️ Edit Image", key="action_edit", use_container_width=True):
                 st.switch_page("pages/3_Image_Edit.py")
         with act_c2:
             if st.button(f"🕐 Versions ({len(versions)})", key="action_versions", use_container_width=True):
                 st.switch_page("pages/3_Image_Edit.py")
+        with act_c3:
+            if st.button("🔎 Find Similar", key="action_search", use_container_width=True):
+                if caption:
+                    st.session_state["search_query"] = caption
+                st.switch_page("pages/4_Search.py")
 
     # ── Quick metrics strip ────────────────────────────────────────────────
     st.markdown("---")

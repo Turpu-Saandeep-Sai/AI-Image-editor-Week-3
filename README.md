@@ -4,12 +4,13 @@
 
 ![Python](https://img.shields.io/badge/Python-3.11+-3776AB?style=for-the-badge&logo=python&logoColor=white)
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.35+-FF4B4B?style=for-the-badge&logo=streamlit&logoColor=white)
-![OpenAI](https://img.shields.io/badge/OpenAI-GPT_Image-412991?style=for-the-badge&logo=openai&logoColor=white)
+![OpenAI](https://img.shields.io/badge/OpenAI-GPT_Image_&_Embeddings-412991?style=for-the-badge&logo=openai&logoColor=white)
+![ChromaDB](https://img.shields.io/badge/VectorDB-ChromaDB_|_FAISS-FF6F61?style=for-the-badge)
 ![License](https://img.shields.io/badge/License-MIT-green?style=for-the-badge)
 
-**A production-quality, modular AI-powered image management and editing platform built with Streamlit, OpenAI GPT Image API, and Google Gemini.**
+**A production-quality, modular AI-powered image management, editing, and semantic search platform built with Streamlit, OpenAI, Google Gemini, ChromaDB, and FAISS.**
 
-[Features](#features) · [Architecture](#architecture) · [Installation](#installation) · [Usage](#usage) · [Roadmap](#roadmap)
+[Features](#features) · [Architecture](#architecture) · [Installation](#installation) · [Usage](#usage) · [Deployment](#deployment-guide-streamlit-community-cloud) · [Roadmap](#future-roadmap)
 
 </div>
 
@@ -17,23 +18,11 @@
 
 ## Overview
 
-The **AI-Powered Image Editing Platform** is a multi-week project building towards a full-stack AI image editor with semantic search, version history, and intelligent editing.
+The **AI-Powered Image Editing Platform** is an end-to-end full-stack AI media management solution featuring semantic natural language search, AI image editing, version control, and multi-tiered vector search.
 
-**Week 1** delivered the **image management foundation**:
-- Upload PNG / JPG / JPEG images with full validation
-- Automatic AI caption generation via OpenAI GPT-4o Vision (or Gemini)
-- JSON-backed metadata persistence with atomic writes
-- Responsive library view with search, sort, and filter
-- Detailed image view with full technical metadata
-
-**Week 2** adds **AI-powered image editing and version history**:
-- Edit images using natural language instructions
-- 10 one-click preset editing operations
-- Non-destructive version history (every edit creates a new version)
-- Side-by-side comparison of original vs edited
-- Version history timeline with thumbnails and prompts
-- Reusable prompt engineering templates
-- Support for both OpenAI GPT Image API and Gemini Image Editing API
+- **Week 1 Foundation**: Image upload, format validation, UUID storage, automatic AI captioning (GPT-4o / Gemini), JSON metadata, library grid view, and technical detail view.
+- **Week 2 AI Editing & Version History**: Natural language image editing (`gpt-image-1` / Gemini), 10 one-click preset operations, non-destructive versioning history, side-by-side comparison, and prompt templates.
+- **Week 3 Semantic Search & Backend Enhancements**: Natural language vector search, embeddings (`text-embedding-3-small` / Gemini), 3-tiered vector DB engine (**ChromaDB** → **FAISS** → **NumPy Cosine Similarity**), search suggestion chips, match percentage badges, and performance caching.
 
 ---
 
@@ -41,55 +30,56 @@ The **AI-Powered Image Editing Platform** is a multi-week project building towar
 
 | Feature | Status |
 |---|---|
-| Image Upload (PNG, JPG, JPEG) | ✅ Week 1 |
-| Format & integrity validation | ✅ Week 1 |
-| UUID-based storage | ✅ Week 1 |
-| AI Caption Generation (OpenAI / Gemini) | ✅ Week 1 |
-| Retry logic with exponential back-off | ✅ Week 1 |
-| JSON metadata persistence (atomic writes) | ✅ Week 1 |
-| Library View (search, sort, filter) | ✅ Week 1 |
-| Detail View (dimensions, size, UUID) | ✅ Week 1 |
-| Glassmorphism UI with dark gradient theme | ✅ Week 1 |
-| AI Image Editing (natural language) | ✅ Week 2 |
-| 10 Preset Edit Operations | ✅ Week 2 |
-| Custom Prompt Editing | ✅ Week 2 |
-| Non-destructive Version History | ✅ Week 2 |
-| Version History Timeline UI | ✅ Week 2 |
-| Side-by-side Comparison | ✅ Week 2 |
-| Prompt Engineering Templates | ✅ Week 2 |
-| Semantic search (embeddings) | 🔜 Week 3 |
+| Image Upload (PNG, JPG, JPEG) & Integrity Validation | ✅ Week 1 |
+| Automatic AI Caption Generation (OpenAI / Gemini) | ✅ Week 1 |
+| JSON Metadata Persistence & Atomic File Writes | ✅ Week 1 |
+| Responsive Library Grid View (search, sort, filter) | ✅ Week 1 |
+| Technical Detail View (dimensions, size, UUID) | ✅ Week 1 |
+| Natural Language AI Image Editing (OpenAI / Gemini) | ✅ Week 2 |
+| 10 One-Click Preset Edit Operations | ✅ Week 2 |
+| Non-Destructive Version History (never overwrites originals) | ✅ Week 2 |
+| Side-by-Side Image Edit Comparison View | ✅ Week 2 |
+| Version History Timeline with Timestamps & Prompts | ✅ Week 2 |
+| Reusable Prompt Engineering Templates | ✅ Week 2 |
+| Natural Language Semantic Search ("beach", "dog", "sunset") | ✅ Week 3 |
+| Text & Caption Embeddings (`text-embedding-3-small` / Gemini) | ✅ Week 3 |
+| Multi-Tier Vector Search Engine (**ChromaDB** / **FAISS** / **NumPy**) | ✅ Week 3 |
+| Dedicated Search UI (`pages/4_Search.py`) & Preset Chips | ✅ Week 3 |
+| Similarity Percentage Match Badges (`🎯 94.2% Match`) | ✅ Week 3 |
+| Vector Embedding Caching (zero duplicate API charges) | ✅ Week 3 |
 
 ---
 
 ## Architecture
 
 ```
-┌──────────────────────────────────────────────────────────────┐
-│                      Streamlit UI Layer                      │
-│  ┌────────┐  ┌──────────┐  ┌─────────────┐  ┌───────────┐  │
-│  │ app.py │  │ Library  │  │ Image Detail│  │ Image Edit│  │
-│  │(Upload)│  │  (Grid)  │  │ (Metadata)  │  │ (AI Edit) │  │
-│  └───┬────┘  └────┬─────┘  └──────┬──────┘  └─────┬─────┘  │
-└──────┼────────────┼───────────────┼────────────────┼────────┘
-       │            │               │                │
-┌──────▼────────────▼───────────────▼────────────────▼────────┐
-│                      Backend Layer                           │
-│  ┌────────┐ ┌────────┐ ┌────────┐ ┌──────────┐ ┌─────────┐ │
-│  │storage │ │database│ │caption │ │image_edit│ │ prompt  │ │
-│  │  .py   │ │  .py   │ │  .py   │ │   .py    │ │templates│ │
-│  └───┬────┘ └───┬────┘ └───┬────┘ └────┬─────┘ └─────────┘ │
-└──────┼──────────┼──────────┼───────────┼────────────────────┘
-       │          │          │           │
-  data/images/ metadata.json  OpenAI / Gemini APIs
+┌───────────────────────────────────────────────────────────────┐
+│                      Streamlit UI Layer                       │
+│ ┌─────────┐ ┌─────────┐ ┌─────────────┐ ┌──────────┐ ┌──────┐ │
+│ │ app.py  │ │ Library │ │Image Detail │ │Image Edit│ │Search│ │
+│ │(Upload) │ │ (Grid)  │ │ (Metadata)  │ │(AI Edit) │ │ (AI) │ │
+│ └────┬────┘ └────┬────┘ └──────┬──────┘ └────┬─────┘ └──┬───┘ │
+└──────┼───────────┼─────────────┼─────────────┼──────────┼─────┘
+       │           │             │             │          │
+┌──────▼───────────▼─────────────▼─────────────▼──────────▼─────┐
+│                       Backend Layer                           │
+│ ┌─────────┐ ┌─────────┐ ┌─────────┐ ┌──────────┐ ┌──────────┐ │
+│ │ storage │ │database │ │ caption │ │image_edit│ │ embedding│ │
+│ │   .py   │ │   .py   │ │   .py   │ │   .py    │ │   .py    │ │
+│ └────┬────┘ └────┬────┘ └────┬────┘ └────┬─────┘ └────┬─────┘ │
+└──────┼───────────┼───────────┼───────────┼────────────┼───────┘
+       │           │           │           │            │
+  data/images/ metadata.json Vision API Image Edit API  Vector Store
+                                                       (ChromaDB/
+                                                        FAISS/NumPy)
 ```
 
 ### Design Principles
 
-- **Separation of concerns**: UI layer never touches the filesystem directly; all I/O goes through `backend/`.
-- **Stateless modules**: Every backend function accepts all its dependencies as arguments — no module-level globals, no hidden state.
-- **Non-destructive editing**: Every edit creates a new version file; originals are never overwritten.
-- **Extensibility**: The metadata schema and storage layer support unlimited version chains. The database module can be swapped for SQLite with minimal interface changes.
-- **Safety**: Path traversal prevention in `storage.py`; atomic JSON writes in `database.py`.
+- **Separation of Concerns**: UI layer never touches disk directly; all storage and AI logic flow through `backend/`.
+- **Stateless & Resilient**: All services receive root directory paths explicitly; imports trigger zero global state side effects.
+- **Multi-Tiered Vector Search**: Automatically selects ChromaDB if available, falls back to FAISS, and guarantees execution via NumPy Cosine Similarity.
+- **Non-Destructive Versioning**: Every edit creates a new version file (`{image_id}_v{N}.png`). Original files are never modified.
 
 ---
 
@@ -101,29 +91,33 @@ ai-image-editor/
 ├── app.py                        # Entry point — Upload page + global config
 ├── pages/
 │   ├── 1_Library.py              # Image grid with search & sort
-│   ├── 2_Image_Detail.py         # Full metadata + action panel
-│   └── 3_Image_Edit.py           # AI editing + presets + version history
+│   ├── 2_Image_Detail.py         # Technical metadata + quick actions
+│   ├── 3_Image_Edit.py           # AI editing + presets + version timeline
+│   └── 4_Search.py               # Semantic vector search page (Week 3)
 │
 ├── backend/
-│   ├── __init__.py
-│   ├── storage.py                # File-system image management
-│   ├── database.py               # JSON metadata persistence
-│   ├── caption.py                # OpenAI / Gemini Vision API (captioning)
-│   ├── image_edit.py             # AI image editing engine (Week 2)
-│   ├── prompt_templates.py       # Reusable prompt templates (Week 2)
-│   └── utils.py                  # UUID, timestamps, validation, thumbnails
+│   ├── __init__.py               # Package exports & docstring
+│   ├── storage.py                # File-system image storage & path safety
+│   ├── database.py               # JSON metadata persistence & atomic writes
+│   ├── caption.py                # Vision API captioning & retry logic
+│   ├── image_edit.py             # AI image editing engine (OpenAI & Gemini)
+│   ├── prompt_templates.py       # Reusable prompt engineering templates
+│   ├── embedding.py              # Vector embedding generation & caching (Week 3)
+│   └── search.py                 # Multi-tiered vector search engine (Week 3)
 │
 ├── data/
-│   ├── images/                   # Uploaded + versioned images (UUID-named)
-│   └── metadata.json             # Auto-created on first upload
-│
-├── assets/                       # Static assets (logos, icons — future)
+│   ├── images/                   # Uploaded & edited version images
+│   ├── embeddings/               # Cached vector embeddings (JSON)
+│   ├── chromadb/                 # Persistent ChromaDB vector index
+│   ├── faiss/                    # FAISS binary vector index
+│   └── metadata.json             # Application metadata store
 │
 ├── requirements.txt
 ├── .env.example
 ├── .gitignore
-├── sample_metadata.json          # Example metadata with version history
+├── sample_metadata.json          # Example metadata with embeddings
 ├── WEEK2_REPORT.md               # Week 2 project report
+├── WEEK3_REPORT.md               # Week 3 project report
 └── README.md
 ```
 
@@ -141,8 +135,8 @@ ai-image-editor/
 
 ```bash
 # 1. Clone the repository
-git clone https://github.com/your-username/ai-image-editor.git
-cd ai-image-editor
+git clone https://github.com/Turpu-Saandeep-Sai/AI-Image-editor-Week-2.git
+cd AI-Image-editor-Week-2
 
 # 2. Create and activate a virtual environment
 python -m venv .venv
@@ -156,29 +150,27 @@ source .venv/bin/activate
 # 3. Install dependencies
 pip install -r requirements.txt
 
-# 4. Configure environment
+# 4. Configure environment variables
 cp .env.example .env
-# Edit .env and add your API key
+# Edit .env and paste your API key
 ```
 
 ---
 
 ## Environment Setup
 
-Edit `.env` (copy from `.env.example`):
+Edit `.env` (copied from `.env.example`):
 
 ```dotenv
-# Choose your Vision provider: "openai" or "gemini"
+# Select provider: "openai" (default) or "gemini"
 VISION_PROVIDER=openai
 
-# OpenAI (default)
-OPENAI_API_KEY=sk-...
+# OpenAI API Key (required when VISION_PROVIDER=openai)
+OPENAI_API_KEY=sk-proj-...
 
-# Google Gemini (alternative)
+# Google Gemini API Key (required when VISION_PROVIDER=gemini)
 GOOGLE_API_KEY=AIza...
 ```
-
-> **Note**: Only one provider needs to be configured. The same provider is used for both captioning and image editing.
 
 ---
 
@@ -188,172 +180,94 @@ GOOGLE_API_KEY=AIza...
 streamlit run app.py
 ```
 
-The app will open at **http://localhost:8501** in your default browser.
+The application will open at **http://localhost:8501** in your web browser.
 
 ---
 
 ## Usage Guide
 
-### Uploading an Image
+### 1. Uploading & Auto-Indexing
 
-1. Navigate to the **Upload** page (default home).
+1. Navigate to the **Upload** page.
 2. Drag & drop or browse for a PNG, JPG, or JPEG file.
-3. A preview is shown immediately.
-4. The app validates the file format and integrity.
-5. An AI caption is generated automatically (10–30 seconds).
-6. The image appears in the **Library** once complete.
+3. The platform validates file integrity, assigns a UUID, saves the file to disk, generates a 40–60 word AI caption, generates a vector embedding, and indexes it into the vector database.
 
-### Library View
+### 2. Library & Detail View
 
-- Browse all uploaded images as responsive cards.
-- Use the **search bar** to filter by filename or caption text.
-- Sort by **newest, oldest, or filename**.
-- Click **🔍 View** on any card to open the Detail View.
-- Click **✏️ Edit** on any card to open the Image Editor.
+- Browse all uploaded images as responsive glassmorphism cards.
+- Search by filename or text caption in the Library.
+- Open **Detail View** to inspect dimensions, format, UUID, storage path, and version history.
 
-### Detail View
+### 3. AI Image Editing & Versions
 
-- See the full-resolution image alongside all technical metadata.
-- Copy the UUID for programmatic access.
-- Navigate between images using the **Previous / Next** controls.
-- Click **✏️ Edit Image** to start editing.
-- View the **Version History** section to see all edits.
+- Open the **Edit** page for any image.
+- Type a custom natural language instruction (e.g. *"Remove the background"*, *"Make it look like sunset"*, *"Turn into watercolor"*).
+- Or click any of the **10 preset edit buttons** (*Remove Background*, *Replace Background*, *Blur Background*, *Change Sky*, *B&W*, *Vintage*, *Cartoon*, *Sharpen*, etc.).
+- The edited result appears side-by-side with the original and is saved as a new version (`_v1.png`, `_v2.png`).
 
-### Image Editing (Week 2)
+### 4. Semantic Natural Language Search (Week 3)
 
-1. Open any image in the **Edit** page.
-2. **Custom edit**: Type a natural language instruction (e.g., "Remove the background").
-3. **Preset edit**: Click one of the 10 preset buttons for one-click editing.
-4. Click **🚀 Generate Edit** and wait 15–30 seconds.
-5. The edited image appears in a **side-by-side comparison**.
-6. A new version is automatically saved and tracked.
-
-### Preset Edit Operations
-
-| Preset | What it does |
-|--------|-------------|
-| 🗑️ Remove Background | Remove background, keep subject |
-| 🧹 Remove All Objects | Remove objects, keep background |
-| 🏞️ Replace Background | Replace with scenic landscape |
-| 🔍 Blur Background | Apply bokeh blur effect |
-| 🌅 Change Sky | Replace sky with sunset |
-| 🖤 Black & White | High-contrast B&W with film grain |
-| ☀️ Increase Brightness | Brighten naturally |
-| 📷 Vintage Style | Warm vintage film look |
-| 🎨 Cartoon Style | Transform into illustration |
-| 🔬 Sharpen Image | Enhance detail and clarity |
-
-### Version History
-
-- Every edit creates a new version; originals are never overwritten.
-- The **sidebar timeline** shows all versions with prompts and timestamps.
-- Click **Open** on any version to view it.
-- The **inline timeline** on the edit page shows the full edit chain.
+- Open **Semantic Search** (`pages/4_Search.py`).
+- Type natural language concept queries such as *"beach"*, *"dog"*, *"sunset"*, *"people on mountain"*, *"night city"*, *"cars"*, or *"snow"*.
+- Or click any of the **suggestion chips** for instant testing.
+- View matching images ranked by similarity score percentage (`🎯 94.2% Match`).
+- Filter by `Most Similar`, `Newest`, `Oldest`, or `Recently Edited`.
 
 ---
 
 ## API Reference
 
-### Backend Modules
+### `backend/embedding.py`
 
-#### `backend/utils.py`
+| Function | Signature | Description |
+|---|---|---|
+| `generate_embedding` | `(text, api_key, provider) → (list[float], str\|None)` | Generates float vector embedding |
+| `save_embedding` | `(data_dir, image_id, vector) → bool` | Saves vector JSON to disk |
+| `load_embedding` | `(data_dir, image_id) → list[float]\|None` | Loads cached vector from disk |
+| `get_or_create_image_embedding` | `(data_dir, image_id, caption) → (list[float], str\|None)` | Retrieves cached or creates new vector |
 
-| Function | Description |
-|---|---|
-| `generate_uuid()` | Generates a UUID4 string |
-| `timestamp()` | Returns current UTC timestamp |
-| `image_validation(bytes, str)` | Validates format & integrity |
-| `thumbnail_creation(Path, tuple)` | Creates in-memory thumbnail |
-| `format_file_size(int)` | Formats bytes as human-readable |
-| `get_image_dimensions(Path)` | Returns (width, height) |
-| `version_name(str, int, str)` | Generates versioned filename (Week 2) |
-| `create_thumbnail(Path, Path, tuple)` | Saves thumbnail to disk (Week 2) |
+### `backend/search.py`
 
-#### `backend/storage.py`
-
-| Function | Description |
-|---|---|
-| `save_image(bytes, str, Path)` | Persists image bytes to disk |
-| `load_image(Path)` | Opens image from disk |
-| `delete_image(Path)` | Removes image file |
-| `list_images(Path)` | Lists all stored images |
-| `save_version_image(bytes, str, int, Path)` | Saves versioned image (Week 2) |
-
-#### `backend/database.py`
-
-| Function | Description |
-|---|---|
-| `load_metadata(Path)` | Reads JSON metadata store |
-| `save_metadata(Path, list)` | Writes JSON metadata store |
-| `add_metadata(Path, dict)` | Appends a new record |
-| `find_by_id(Path, str)` | Finds record by UUID |
-| `find_all(Path, ...)` | Returns all records, sorted |
-| `update_metadata(Path, str, dict)` | Updates fields on a record |
-| `delete_metadata(Path, str)` | Removes a record |
-| `add_version(Path, str, dict)` | Appends version to record (Week 2) |
-| `load_versions(Path, str)` | Returns version list (Week 2) |
-
-#### `backend/caption.py`
-
-| Function | Description |
-|---|---|
-| `generate_caption(Path, ...)` | Full caption pipeline |
-| `vision_api(bytes, str, str, str)` | Dispatches to provider |
-| `retry_logic(...)` | Exponential back-off retry decorator |
-
-#### `backend/image_edit.py` (Week 2)
-
-| Function | Description |
-|---|---|
-| `edit_image(Path, str, str, int, Path, Path, ...)` | Full edit pipeline |
-| `call_edit_api(bytes, str, str, str)` | Dispatches to editing provider |
-| `save_version(bytes, str, int, Path)` | Saves edited version to disk |
-
-#### `backend/prompt_templates.py` (Week 2)
-
-| Function | Description |
-|---|---|
-| `build_edit_prompt(str, str)` | Combines system + user prompt |
-| `get_preset_names()` | Returns preset name list |
-| `get_preset_prompt(str)` | Returns prompt for a preset |
+| Function | Signature | Description |
+|---|---|---|
+| `get_active_vector_engine` | `() → str` | Returns `"ChromaDB"`, `"FAISS"`, or `"NumPy Cosine Similarity"` |
+| `index_image` | `(data_dir, image_id, caption, metadata) → bool` | Indexes image into active vector store |
+| `reindex_all_images` | `(data_dir) → int` | Reindexes missing items in bulk |
+| `semantic_search` | `(query, data_dir, top_k, filter_option) → (list[dict], str\|None)` | Executes vector search & returns ranked results |
 
 ---
 
-## Testing Instructions
+## Deployment Guide (Streamlit Community Cloud)
 
-1. **Start the app**: `streamlit run app.py`
-2. **Upload an image**: Go to the Upload page and upload a PNG/JPG file.
-3. **Verify caption**: Check that an AI caption is generated.
-4. **Browse library**: Go to the Library and verify the image card appears.
-5. **Edit an image**: Click ✏️ Edit → type "Remove the background" → click 🚀 Generate Edit.
-6. **Check comparison**: Verify the before/after comparison appears.
-7. **Check versions**: Look at the sidebar timeline — Version 1 should appear.
-8. **Try presets**: Click any preset button and verify a new version is created.
-9. **Check metadata**: Open `data/metadata.json` and verify the versions array is populated.
-10. **Error handling**: Remove the API key from `.env` and verify a clear error message appears.
+To deploy this application to **Streamlit Community Cloud**:
 
----
+1. **Push your repository to GitHub**:
+   ```bash
+   git add .
+   git commit -m "Deploy Week 3 AI Image Editing Platform"
+   git push origin main
+   ```
 
-## Future Roadmap
+2. **Sign in to Streamlit Community Cloud**:
+   - Go to [share.streamlit.io](https://share.streamlit.io/) and log in with your GitHub account.
 
-### Week 3 — Semantic Search
-- [ ] Generate image embeddings (OpenAI `text-embedding-3-small`)
-- [ ] FAISS or ChromaDB vector store integration
-- [ ] Natural language image search ("show me photos of cats outdoors")
-- [ ] Similar image recommendations
+3. **Deploy New App**:
+   - Click **New app**.
+   - Select your repository: `Turpu-Saandeep-Sai/AI-Image-editor-Week-2` (or Week 3 repo).
+   - Set **Branch**: `main`.
+   - Set **Main file path**: `app.py`.
 
-### Week 4 — Production Features
-- [ ] PostgreSQL / SQLite backend (replace JSON)
-- [ ] User authentication
-- [ ] Export / download edited images
-- [ ] Performance optimisations (lazy loading, pagination)
-- [ ] Deployment guide (Docker, Streamlit Cloud, AWS)
+4. **Configure Secrets**:
+   - In the deployment setup page, click **Advanced settings...** or open **Secrets** in app settings.
+   - Add your API keys in TOML format:
+     ```toml
+     VISION_PROVIDER = "openai"
+     OPENAI_API_KEY = "sk-proj-your-openai-api-key"
+     GOOGLE_API_KEY = "your-google-api-key"
+     ```
 
----
-
-## Contributing
-
-Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.
+5. **Click Deploy**:
+   - Streamlit will automatically install dependencies from `requirements.txt` and launch the app live at `https://<your-app-name>.streamlit.app`.
 
 ---
 

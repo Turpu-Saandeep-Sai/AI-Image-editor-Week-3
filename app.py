@@ -58,6 +58,7 @@ ASSETS_DIR: Path = ROOT_DIR / "assets"
 from backend.database import add_metadata, build_record, find_all  # noqa: E402
 from backend.storage import save_image  # noqa: E402
 from backend.caption import generate_caption  # noqa: E402
+from backend.search import index_image  # noqa: E402
 from backend.utils import (  # noqa: E402
     generate_uuid,
     image_validation,
@@ -250,7 +251,7 @@ def _render_sidebar() -> None:
                     AI Image Editor
                 </h2>
                 <p style="color:rgba(255,255,255,0.35); font-size:0.75rem; margin:0;">
-                    Week 2 · AI Editing & Versions
+                    Week 3 · Search & AI Platform
                 </p>
             </div>
             """,
@@ -263,6 +264,7 @@ def _render_sidebar() -> None:
         st.page_link("pages/1_Library.py", label="🖼️  Library", icon=None)
         st.page_link("pages/2_Image_Detail.py", label="🔍  Detail View", icon=None)
         st.page_link("pages/3_Image_Edit.py", label="✏️  Edit Image", icon=None)
+        st.page_link("pages/4_Search.py", label="🔎  Semantic Search", icon=None)
 
         st.markdown("---")
 
@@ -279,7 +281,7 @@ def _render_sidebar() -> None:
         st.markdown("---")
         st.markdown(
             "<p style='color:rgba(255,255,255,0.3); font-size:0.7rem; text-align:center;'>"
-            "v2.0.0 · Built with Streamlit</p>",
+            "v3.0.0 · Built with Streamlit</p>",
             unsafe_allow_html=True,
         )
 
@@ -461,6 +463,10 @@ def _handle_upload(uploaded_file) -> None:  # type: ignore[no-untyped-def]
     if not success:
         st.error("❌ Failed to save metadata. Please try again.")
         return
+
+    # ── Generate vector embedding & index into Vector DB ───────────────────
+    if caption:
+        index_image(DATA_DIR, image_id, caption, record)
 
     # ── Mark success & trigger rerun to show banner ────────────────────────
     st.session_state["upload_success"] = True

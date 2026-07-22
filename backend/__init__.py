@@ -10,4 +10,7 @@ Modules:
     - caption:           AI-powered caption generation via Vision API
     - image_edit:        AI-powered image editing engine (Week 2)
     - prompt_templates:  Reusable prompt engineering templates (Week 2)
+    - embedding:         Vector embedding generation & caching (Week 3)
+    - search:            Multi-tiered semantic vector search engine (Week 3)
 """
+

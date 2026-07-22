@@ -307,6 +307,7 @@ def build_record(
         "filepath": filepath,
         "caption": caption,
         "uploaded_at": uploaded_at,
+        "has_embedding": False,  # Week 3 semantic search vector flag
         "versions": [],  # reserved for Week 2+ version history
     }
 

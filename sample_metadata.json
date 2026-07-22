@@ -5,6 +5,7 @@
     "caption": "A beautiful sandy beach with crystal clear water",
     "filepath": "data/images/abc123.jpg",
     "uploaded_at": "2026-07-15T10:30:00Z",
+    "has_embedding": true,
     "versions": [
       {
         "version": 0,
